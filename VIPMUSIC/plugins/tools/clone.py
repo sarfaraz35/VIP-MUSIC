@@ -8,7 +8,6 @@ from pyrogram.errors.exceptions.bad_request_400 import (
 )
 from pyrogram.errors.exceptions.unauthorized_401 import SessionRevoked
 
-
 from VIPMUSIC.utils.database import get_assistant
 from config import API_ID, API_HASH
 from VIPMUSIC import app
@@ -102,6 +101,23 @@ async def delete_cloned_bot(client, message):
         await message.reply_text("An error occurred while deleting the cloned bot.")
         logging.exception(e)
 
+@app.on_message(filters.command("cloned"))
+async def list_cloned_bots(client, message):
+    if not CLONE_MODE == str(True):
+        return
+    try:
+        if len(CLONES) == 0:
+            await message.reply_text("No bots have been cloned yet.")
+            return
+        buttons = []
+        for i in CLONES:
+            buttons.append([InlineKeyboardButton(i, url=f"tg://openmessage?user_id={i}")])
+        await message.reply_text(f"**Given below all cloned bot list...**\n**Cloned From @{app.username}**", reply_markup=InlineKeyboardMarkup(buttons))
+    except Exception as e:
+        logging.exception(e)
+        await message.reply_text("**An error occurred while listing cloned bots.**")
+
+
 async def restart_bots():
     if not CLONE_MODE == str(True):
         return
@@ -125,23 +141,8 @@ async def restart_bots():
                     CLONES.add(bot.id)
                 except Exception:
                     pass
-    except SessionRevoked:
+    except (AccessTokenExpired or AccessTokenInvalid or SessionRevoked):
         clonebotdb.delete_one({"token": bot_token})
     except Exception as e:
         logging.exception("Error while restarting bots.")
 
-@app.on_message(filters.command("cloned"))
-async def list_cloned_bots(client, message):
-    if not CLONE_MODE == str(True):
-        return
-    try:
-        if len(CLONES) == 0:
-            await message.reply_text("No bots have been cloned yet.")
-            return
-        buttons = []
-        for i in CLONES:
-            buttons.append([InlineKeyboardButton(i, url=f"tg://openmessage?user_id={i}")])
-        await message.reply_text(f"**Given below all cloned bot list...**\n**Cloned From @{app.username}**", reply_markup=InlineKeyboardMarkup(buttons))
-    except Exception as e:
-        logging.exception(e)
-        await message.reply_text("**An error occurred while listing cloned bots.**")
