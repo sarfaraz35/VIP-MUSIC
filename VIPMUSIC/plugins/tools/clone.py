@@ -11,12 +11,15 @@ from config import API_ID, API_HASH
 from VIPMUSIC import app
 from VIPMUSIC.misc import SUDOERS
 from VIPMUSIC.utils.database import get_assistant, clonebotdb
-from config import LOGGER_ID
+from config import LOGGER_ID, CLONE_MODE
 
 CLONES = set()
 
 @app.on_message(filters.command("clone"))
 async def clone_txt(client, message):
+    if CLONE_MODE == str(True):
+        return
+
     userbot = await get_assistant(message.chat.id)
     if len(message.command) > 1:
         bot_token = message.text.split("/clone", 1)[1].strip()
