@@ -17,7 +17,7 @@ CLONES = set()
 
 @app.on_message(filters.command("clone"))
 async def clone_txt(client, message):
-    if CLONE_MODE == str(True):
+    if not CLONE_MODE == str(True):
         return
 
     userbot = await get_assistant(message.chat.id)
@@ -74,6 +74,8 @@ async def clone_txt(client, message):
 
 @app.on_message(filters.command(["deletecloned", "delcloned", "delclone", "deleteclone", "removeclone", "cancelclone"]))
 async def delete_cloned_bot(client, message):
+    if not CLONE_MODE == str(True):
+        return
     try:
         if len(message.command) < 2:
             await message.reply_text("**⚠️ Please provide the bot token after the command.**")
@@ -125,6 +127,8 @@ async def restart_bots():
 
 @app.on_message(filters.command("cloned"))
 async def list_cloned_bots(client, message):
+    if not CLONE_MODE == str(True):
+        return
     try:
         if len(CLONES) == 0:
             await message.reply_text("No bots have been cloned yet.")
