@@ -102,6 +102,8 @@ async def delete_cloned_bot(client, message):
         logging.exception(e)
 
 async def restart_bots():
+    if not CLONE_MODE == str(True):
+        return
     global CLONES
     try:
         logging.info("Restarting all cloned bots........")
