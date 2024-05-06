@@ -141,7 +141,7 @@ async def restart_bots():
                     CLONES.add(bot.id)
                 except Exception:
                     pass
-    except (AccessTokenExpired or AccessTokenInvalid or SessionRevoked):
+    except (AccessTokenExpired, AccessTokenInvalid, SessionRevoked):
         clonebotdb.delete_one({"token": bot_token})
     except Exception as e:
         logging.exception("Error while restarting bots.")
