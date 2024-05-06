@@ -10,7 +10,7 @@ from VIPMUSIC.core.call import VIP
 from VIPMUSIC.misc import sudo
 from VIPMUSIC.plugins import ALL_MODULES
 from VIPMUSIC.utils.database import get_banned_users, get_gbanned
-from config import BANNED_USERS
+from config import BANNED_USERS, CLONE_MODE
 from VIPMUSIC import telethn
 
 async def init():
