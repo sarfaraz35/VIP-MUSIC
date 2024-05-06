@@ -6,6 +6,9 @@ from pyrogram.errors.exceptions.bad_request_400 import (
     AccessTokenExpired,
     AccessTokenInvalid,
 )
+from pyrogram.errors.exceptions.unauthorized_401 import SessionRevoked
+
+
 from VIPMUSIC.utils.database import get_assistant
 from config import API_ID, API_HASH
 from VIPMUSIC import app
@@ -91,8 +94,6 @@ async def delete_cloned_bot(client, message):
             await message.reply_text(
                 "**🤖 your cloned bot has been disconnected from my server ☠️\nClone by :- /clone**"
             )
-            await restart_bots()
-            # Call restart function here after successful deletion
         else:
             await message.reply_text(
                 "**⚠️ The provided bot token is not in the cloned list.**"
@@ -124,6 +125,8 @@ async def restart_bots():
                     CLONES.add(bot.id)
                 except Exception:
                     pass
+    except SessionRevoked:
+        clonebotdb.delete_one({"token": bot_token})
     except Exception as e:
         logging.exception("Error while restarting bots.")
 
